@@ -13,7 +13,6 @@ const db = mysql.createConnection(
 );
 
 const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => {
-    // err ? console.error(err) : console.table(results)
     if (err) {
         console.error(err)
     } else {
@@ -28,7 +27,14 @@ const viewRoles = () => db.query(`SELECT role.id AS id,
     role.salary AS salary
     FROM role
     JOIN department ON role.department_id = department.id
-    ORDER BY id ASC`, (err, results) => err ? console.error(err) : console.table(results));
+    ORDER BY id ASC`, (err, results) => {
+        if (err) {
+            console.error(err)
+        } else {
+            console.table(results)
+        }
+        init();
+    });
 
 const viewEmps = () => db.query(`SELECT employee.id AS id,
     employee.first_name AS first_name,
@@ -40,7 +46,14 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
     FROM employee
     JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
-    ORDER BY id ASC`, (err, results) => err ? console.error(err) : console.table(results));
+    ORDER BY id ASC`, (err, results) => {
+        if (err) {
+            console.error(err)
+        } else {
+            console.table(results)
+        }
+        init();
+    });
 
 const addDept = () => db.query();
 
