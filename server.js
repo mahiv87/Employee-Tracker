@@ -12,7 +12,15 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_tracker_db`)
 );
 
-const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => err ? console.error(err) : console.table(results));
+const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => {
+    // err ? console.error(err) : console.table(results)
+    if (err) {
+        console.error(err)
+    } else {
+        console.table(results)
+    }
+    init();
+});
 
 const viewRoles = () => db.query(`SELECT role.id AS id,
     role.title AS title,
@@ -34,6 +42,19 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
     JOIN department ON role.department_id = department.id
     ORDER BY id ASC`, (err, results) => err ? console.error(err) : console.table(results));
 
+const addDept = () => db.query();
+
+const addRole = () => db.query();
+
+const addEmp = () => db.query();
+
+const updateRole = () => db.query();
+
+const quitApp = () => {
+    console.log('Employee Tracker app has closed');
+    db.end();
+}
+
 function init() {
     inquirer
         .prompt([
@@ -41,7 +62,7 @@ function init() {
                 type: 'list',
                 name: 'initial',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role']
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'QUIT']
             },
         ])
         .then((data) => {
@@ -54,6 +75,21 @@ function init() {
                     break;
                 case 'View All Employees':
                     viewEmps();
+                    break;
+                case 'Add a Department':
+                    addDept();
+                    break;
+                case 'Add a Role':
+                    addRole();
+                    break;
+                case 'Add an Employee':
+                    addEmp();
+                    break;
+                case 'Update an Employee Role':
+                    updateRole();
+                    break;
+                case 'QUIT':
+                    quitApp();
                     break;
             
                 default:
