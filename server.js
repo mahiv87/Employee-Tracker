@@ -176,6 +176,26 @@ const addEmp = () => {
             }
         ])
         .then((res) => {
+            let roleID;
+            db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    roleID = results[0].id
+                    console.log(roleID);
+                }
+            })
+
+            const managerIdArr = res.manager.split(" ");
+            let managerID;
+            db.query(`SELECT (id) FROM employee WHERE first_name=(?) last_name=(?)`, [managerIdArr[0], managerIdArr[1]], (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    managerID = results[0].id
+                    console.log(managerID);
+                }
+            })
             init();
         })
 };
