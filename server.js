@@ -70,20 +70,44 @@ const addDept = () => {
                     console.error(err)
                 } else {
                     console.table(results)
+                    console.log('\x1b[32m Department successfully added!');
                 }
                 init();
             })
         })
 }
 
-const addRole = () => db.query();
+const addRole = () => {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'role',
+                message: 'What is the name of the role?'
+            },
+            {
+                type: 'input',
+                name:'salary',
+                message: 'What is the salary of the role?'
+            },
+            {
+                type: 'list',
+                name: 'dept',
+                message: 'Which department does the role belong to?',
+                choices: []
+            }
+        ])
+        .then((res) => {
+            init();
+        })
+};
 
 const addEmp = () => db.query();
 
 const updateRole = () => db.query();
 
 const quitApp = () => {
-    console.log('Employee Tracker app has closed');
+    console.log('\x1b[32m Employee Tracker app has closed');
     db.end();
 }
 
