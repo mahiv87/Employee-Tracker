@@ -6,7 +6,7 @@ const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: '123456',
         database: 'employee_tracker_db'
     },
     console.log(`Connected to the employee_tracker_db`)
@@ -16,7 +16,7 @@ const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => {
     if (err) {
         console.error(err)
     } else {
-        console.table(results)
+        console.table('\x1b[33m', results)
     }
     init();
 });
@@ -31,7 +31,7 @@ const viewRoles = () => db.query(`SELECT role.id AS id,
         if (err) {
             console.error(err)
         } else {
-            console.table(results)
+            console.table('\x1b[33m', results)
         }
         init();
     });
@@ -50,7 +50,7 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
         if (err) {
             console.error(err)
         } else {
-            console.table(results)
+            console.table('\x1b[33m', results)
         }
         init();
     });
@@ -69,7 +69,7 @@ const addDept = () => {
                 if (err) {
                     console.error(err)
                 } else {
-                    console.table(results)
+                    console.table('\x1b[33m', results)
                     console.log('\x1b[32m Department successfully added!');
                 }
                 init();
@@ -78,6 +78,15 @@ const addDept = () => {
 }
 
 const addRole = () => {
+    const deptArr = [];
+    db.query(`SELECT (name) FROM department ORDER BY name ASC`, (err, results) => {
+        if (err) {
+            console.error(err)
+        }        
+        for (let res of results) {
+            deptArr.push(res)
+        }
+    });
     inquirer
         .prompt([
             {
@@ -94,10 +103,28 @@ const addRole = () => {
                 type: 'list',
                 name: 'dept',
                 message: 'Which department does the role belong to?',
-                choices: []
+                choices: deptArr
             }
         ])
         .then((res) => {
+            console.log(res.dept);
+            let deptID;
+            db.query(`SELECT (id) FROM department WHERE name=(?)`, res.dept, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    deptID = results[0].id
+                }
+
+                db.query(`INSERT INTO role (title, department_id, salary) VALUES (?, ?, ?)`, [res.role, deptID, res.salary], (err, results) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        console.table(results)
+                        console.log('\x1b[32m Role successfully added!');
+                    }
+                })
+            })
             init();
         })
 };
@@ -107,7 +134,7 @@ const addEmp = () => db.query();
 const updateRole = () => db.query();
 
 const quitApp = () => {
-    console.log('\x1b[32m Employee Tracker app has closed');
+    console.log('\x1b[31m Employee Tracker app has closed');
     db.end();
 }
 
