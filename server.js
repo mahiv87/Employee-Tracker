@@ -87,6 +87,7 @@ const addRole = () => {
             deptArr.push(res)
         }
     });
+
     inquirer
         .prompt([
             {
@@ -107,7 +108,6 @@ const addRole = () => {
             }
         ])
         .then((res) => {
-            console.log(res.dept);
             let deptID;
             db.query(`SELECT (id) FROM department WHERE name=(?)`, res.dept, (err, results) => {
                 if (err) {
@@ -129,7 +129,56 @@ const addRole = () => {
         })
 };
 
-const addEmp = () => db.query();
+const addEmp = () => {
+    const roleArr = [];
+    db.query(`SELECT * FROM role`, (err, results) => {
+        if (err) {
+            console.error(err)
+        }
+        for (let res of results) {
+            roleArr.push(res.title)
+        } 
+    })
+
+    const managerArr = ['None'];
+    db.query(`SELECT * FROM employee`, (err, results) => {
+        if (err) {
+            console.error(err)
+        }
+        for (let res of results) {
+            managerArr.push(`${res.first_name} ${res.last_name}`)
+        }
+    })
+
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'first',
+                message: 'What is the employees first name?'
+            },
+            {
+                type: 'input',
+                name: 'last',
+                message: 'What is the employees last name?'
+            },
+            {
+                type: 'list',
+                name: 'role',
+                message: 'What is the employees role?',
+                choices: roleArr
+            },
+            {
+                type: 'list',
+                name: 'manager',
+                message: 'Who is the employees manager?',
+                choices: managerArr
+            }
+        ])
+        .then((res) => {
+            init();
+        })
+};
 
 const updateRole = () => db.query();
 
