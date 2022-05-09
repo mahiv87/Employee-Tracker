@@ -6,7 +6,7 @@ const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: '123456',
+        password: '',
         database: 'employee_tracker_db'
     },
     console.log(`Connected to the employee_tracker_db`)
@@ -129,7 +129,7 @@ const addRole = () => {
         })
 };
 
-const addEmp = () => {
+async function addEmp() {
     const roleArr = [];
     db.query(`SELECT * FROM role`, (err, results) => {
         if (err) {
@@ -177,6 +177,9 @@ const addEmp = () => {
         ])
         .then((res) => {
             let roleID;
+            const managerIdArr = res.manager.split(" ");
+            let managerID;
+
             db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
                 if (err) {
                     console.error(err)
@@ -184,16 +187,28 @@ const addEmp = () => {
                     roleID = results[0].id
                     console.log(roleID);
                 }
-            })
 
-            const managerIdArr = res.manager.split(" ");
-            let managerID;
-            db.query(`SELECT (id) FROM employee WHERE first_name=(?) last_name=(?)`, [managerIdArr[0], managerIdArr[1]], (err, results) => {
-                if (err) {
-                    console.error(err)
-                } else {
-                    managerID = results[0].id
-                    console.log(managerID);
+                db.query(`SELECT (id) FROM employee WHERE first_name=(?) AND last_name=(?)`, [managerIdArr[0], managerIdArr[1]], (err, results) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        managerID = results[0].id
+                        console.log(managerID);
+                        insertEmp();
+                    }
+                })
+                
+                const insertEmp = () => {
+                    const params = [res.first, res.last, roleID, managerID]
+                    console.log(params);
+                    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, params, (err, results) => {
+                        if (err) {
+                            console.error(err)
+                        }  else {
+                            console.table(results)
+                            console.log('\x1b[32m Employee successfully added!');
+                        }
+                    })
                 }
             })
             init();
