@@ -55,7 +55,26 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
         init();
     });
 
-const addDept = () => db.query();
+const addDept = () => {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'dept',
+                message: 'What is the name of the department you would like to add?'
+            }
+        ])
+        .then((res) => {
+            db.query(`INSERT INTO department (name) VALUES (?)`, res.dept, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    console.table(results)
+                }
+                init();
+            })
+        })
+}
 
 const addRole = () => db.query();
 
