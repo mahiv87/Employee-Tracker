@@ -129,7 +129,7 @@ const addRole = () => {
         })
 };
 
-async function addEmp() {
+const addEmp = () => {
     const roleArr = [];
     db.query(`SELECT * FROM role`, (err, results) => {
         if (err) {
