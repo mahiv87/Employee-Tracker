@@ -12,6 +12,46 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_tracker_db`)
 );
 
+const deptArr = [];
+db.query(`SELECT (name) FROM department ORDER BY name ASC`, (err, results) => {
+    if (err) {
+        console.error(err)
+    }        
+    for (let res of results) {
+        deptArr.push(res)
+    }
+});
+
+const empArr =[];
+db.query(`SELECT * FROM employee`, (err, results) => {
+    if (err) {
+        console.error(err)
+    }
+    for (let res of results) {
+        empArr.push(`${res.first_name} ${res.last_name}`)
+    }
+})
+
+const roleArr = [];
+db.query(`SELECT * FROM role`, (err, results) => {
+    if (err) {
+        console.error(err)
+    }
+    for (let res of results) {
+        roleArr.push(res.title)
+    } 
+})
+
+const managerArr = ['None'];
+db.query(`SELECT * FROM employee`, (err, results) => {
+    if (err) {
+        console.error(err)
+    }
+    for (let res of results) {
+        managerArr.push(`${res.first_name} ${res.last_name}`)
+    }
+})
+
 const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => {
     if (err) {
         console.error(err)
@@ -78,16 +118,6 @@ const addDept = () => {
 }
 
 const addRole = () => {
-    const deptArr = [];
-    db.query(`SELECT (name) FROM department ORDER BY name ASC`, (err, results) => {
-        if (err) {
-            console.error(err)
-        }        
-        for (let res of results) {
-            deptArr.push(res)
-        }
-    });
-
     inquirer
         .prompt([
             {
@@ -130,26 +160,6 @@ const addRole = () => {
 };
 
 const addEmp = () => {
-    const roleArr = [];
-    db.query(`SELECT * FROM role`, (err, results) => {
-        if (err) {
-            console.error(err)
-        }
-        for (let res of results) {
-            roleArr.push(res.title)
-        } 
-    })
-
-    const managerArr = ['None'];
-    db.query(`SELECT * FROM employee`, (err, results) => {
-        if (err) {
-            console.error(err)
-        }
-        for (let res of results) {
-            managerArr.push(`${res.first_name} ${res.last_name}`)
-        }
-    })
-
     inquirer
         .prompt([
             {
@@ -178,6 +188,7 @@ const addEmp = () => {
         .then((res) => {
             let roleID;
             const managerIdArr = res.manager.split(" ");
+            console.log(managerIdArr);
             let managerID;
 
             db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
@@ -185,7 +196,7 @@ const addEmp = () => {
                     console.error(err)
                 } else {
                     roleID = results[0].id
-                    console.log(roleID);
+                    // console.log(roleID);
                 }
 
                 db.query(`SELECT (id) FROM employee WHERE first_name=(?) AND last_name=(?)`, [managerIdArr[0], managerIdArr[1]], (err, results) => {
@@ -215,7 +226,23 @@ const addEmp = () => {
         })
 };
 
-const updateRole = () => db.query();
+const updateRole = () => {
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'emp',
+                message: 'Which employees role do you want to update?',
+                choices: empArr
+            },
+            {
+                type: 'list',
+                name: 'role',
+                message: 'Which role do you want to assign to this employee?',
+                choices: roleArr
+            }
+        ])
+};
 
 const quitApp = () => {
     console.log('\x1b[31m Employee Tracker app has closed');
