@@ -109,7 +109,6 @@ const addDept = () => {
                 if (err) {
                     console.error(err)
                 } else {
-                    console.table('\x1b[33m', results)
                     console.log('\x1b[32m Department successfully added!');
                 }
                 init();
@@ -150,7 +149,6 @@ const addRole = () => {
                     if (err) {
                         console.error(err)
                     } else {
-                        console.table(results)
                         console.log('\x1b[32m Role successfully added!');
                     }
                 })
@@ -188,7 +186,6 @@ const addEmp = () => {
         .then((res) => {
             let roleID;
             const managerIdArr = res.manager.split(" ");
-            console.log(managerIdArr);
             let managerID;
 
             db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
@@ -196,7 +193,6 @@ const addEmp = () => {
                     console.error(err)
                 } else {
                     roleID = results[0].id
-                    // console.log(roleID);
                 }
 
                 db.query(`SELECT (id) FROM employee WHERE first_name=(?) AND last_name=(?)`, [managerIdArr[0], managerIdArr[1]], (err, results) => {
@@ -216,7 +212,6 @@ const addEmp = () => {
                         if (err) {
                             console.error(err)
                         }  else {
-                            console.table(results)
                             console.log('\x1b[32m Employee successfully added!');
                         }
                     })
@@ -260,7 +255,6 @@ const updateRole = async () => {
                     if (err) {
                         console.error(err)
                     } else {
-                        console.table(results)
                         console.log('\x1b[32m Role successfully updated!');
                     }
                 })

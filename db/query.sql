@@ -1,10 +1,10 @@
-SELECT role.id AS id,
-    role.title AS title,
-    department.name AS department,
-    role.salary AS salary
-FROM role
-JOIN department ON role.department_id = department.id
-ORDER BY id ASC;
+-- SELECT role.id AS id,
+--     role.title AS title,
+--     department.name AS department,
+--     role.salary AS salary
+-- FROM role
+-- JOIN department ON role.department_id = department.id
+-- ORDER BY id ASC;
 
 SELECT employee.id AS id,
     employee.first_name AS first_name,
@@ -16,5 +16,5 @@ SELECT employee.id AS id,
     FROM employee
     JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
-    -- JOIN employee AS manager ON employee.manager_id = employee.id
+    -- LEFT OUTER JOIN employee AS manager ON employee.manager_id = employee.id
     ORDER BY id ASC;
