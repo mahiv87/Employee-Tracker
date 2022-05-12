@@ -226,8 +226,8 @@ const addEmp = () => {
         })
 };
 
-const updateRole = () => {
-    inquirer
+const updateRole = async () => {
+    await inquirer
         .prompt([
             {
                 type: 'list',
@@ -242,6 +242,32 @@ const updateRole = () => {
                 choices: roleArr
             }
         ])
+        .then((res) => {
+            const empName = res.emp.split(" ");
+            let roleID;
+            db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    roleID = results[0].id
+                }
+                updateRole()
+            })
+
+            const updateRole = () => {
+                const params = [roleID, empName[0], empName[1]]
+                db.query(`UPDATE employee SET role_id=(?) WHERE first_name=(?) AND last_name =(?)`,params, (err, results) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        console.table(results)
+                        console.log('\x1b[32m Role successfully updated!');
+                    }
+                })
+            }
+            init();
+        })
+        
 };
 
 const quitApp = () => {
