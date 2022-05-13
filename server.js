@@ -265,6 +265,34 @@ const updateRole = async () => {
         
 };
 
+const deleted = () => {
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'selection',
+                message: 'Which table do you want to delete from?',
+                choices: ['Department', 'Role', 'Employee']
+            }
+        ])
+        .then((res) => {
+            switch (res.selection) {
+                case Department:
+                    
+                    break;
+                case Role:
+                    
+                    break;
+                case Employee:
+                    
+                    break;
+            
+                default:
+                    break;
+            }
+        })
+}
+
 const quitApp = () => {
     console.log('\x1b[31m Employee Tracker app has closed');
     db.end();
@@ -277,7 +305,7 @@ function init() {
                 type: 'list',
                 name: 'initial',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'QUIT']
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Delete Department, Role, or Employee', 'QUIT']
             },
         ])
         .then((data) => {
@@ -302,6 +330,9 @@ function init() {
                     break;
                 case 'Update an Employee Role':
                     updateRole();
+                    break;
+                case 'Delete Department, Role, or Employee':
+                    deleted();
                     break;
                 case 'QUIT':
                     quitApp();
