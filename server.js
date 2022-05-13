@@ -6,7 +6,7 @@ const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: '123456',
         database: 'employee_tracker_db'
     },
     console.log(`Connected to the employee_tracker_db`)
@@ -82,7 +82,7 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
     role.title AS title,
     department.name AS department,
     role.salary AS salary,
-    manager.last_name AS manager
+    concat(manager.first_name, " " , manager.last_name) AS manager
     FROM employee
     JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
