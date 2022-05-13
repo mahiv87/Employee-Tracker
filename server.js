@@ -82,10 +82,11 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
     role.title AS title,
     department.name AS department,
     role.salary AS salary,
-    employee.manager_id AS manager
+    manager.last_name AS manager
     FROM employee
     JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
+    LEFT JOIN employee manager ON employee.manager_id = manager.id
     ORDER BY id ASC`, (err, results) => {
         if (err) {
             console.error(err)
