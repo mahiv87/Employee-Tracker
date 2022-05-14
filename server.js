@@ -6,13 +6,14 @@ const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: '123456',
         database: 'employee_tracker_db'
     },
     console.log(`Connected to the employee_tracker_db`)
 );
 
-const deptArr = [];
+// Department array
+let deptArr = [];
 db.query(`SELECT (name) FROM department ORDER BY name ASC`, (err, results) => {
     if (err) {
         console.error(err)
@@ -22,7 +23,8 @@ db.query(`SELECT (name) FROM department ORDER BY name ASC`, (err, results) => {
     }
 });
 
-const empArr =[];
+// Employee array
+let empArr =[];
 db.query(`SELECT * FROM employee`, (err, results) => {
     if (err) {
         console.error(err)
@@ -32,7 +34,8 @@ db.query(`SELECT * FROM employee`, (err, results) => {
     }
 })
 
-const roleArr = [];
+// Role array
+let roleArr = [];
 db.query(`SELECT * FROM role`, (err, results) => {
     if (err) {
         console.error(err)
@@ -42,7 +45,8 @@ db.query(`SELECT * FROM role`, (err, results) => {
     } 
 })
 
-const managerArr = ['None'];
+// Manager array
+let managerArr = ['None'];
 db.query(`SELECT * FROM employee`, (err, results) => {
     if (err) {
         console.error(err)
@@ -52,6 +56,7 @@ db.query(`SELECT * FROM employee`, (err, results) => {
     }
 })
 
+// View all departments
 const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => {
     if (err) {
         console.error(err)
@@ -61,6 +66,7 @@ const viewDepts = () => db.query(`SELECT * FROM department`, (err, results) => {
     init();
 });
 
+// View all roles
 const viewRoles = () => db.query(`SELECT role.id AS id,
     role.title AS title,
     department.name AS department,
@@ -76,6 +82,7 @@ const viewRoles = () => db.query(`SELECT role.id AS id,
         init();
     });
 
+    // View all employees
 const viewEmps = () => db.query(`SELECT employee.id AS id,
     employee.first_name AS first_name,
     employee.last_name AS last_name,
@@ -96,6 +103,7 @@ const viewEmps = () => db.query(`SELECT employee.id AS id,
         init();
     });
 
+// Add a department
 const addDept = () => {
     inquirer
         .prompt([
@@ -110,13 +118,15 @@ const addDept = () => {
                 if (err) {
                     console.error(err)
                 } else {
+                    deptArr.push(res.dept);
                     console.log('\x1b[32m Department successfully added!');
                 }
+                init();
             })
-            init();
         })
 }
 
+// Add a role
 const addRole = () => {
     inquirer
         .prompt([
@@ -150,14 +160,16 @@ const addRole = () => {
                     if (err) {
                         console.error(err)
                     } else {
+                        roleArr.push(res.role);
                         console.log('\x1b[32m Role successfully added!');
                     }
+                    init();
                 })
             })
-            init();
         })
 };
 
+// Add an employee
 const addEmp = () => {
     inquirer
         .prompt([
@@ -211,15 +223,17 @@ const addEmp = () => {
                         if (err) {
                             console.error(err)
                         }  else {
+                            empArr.push(`${res.first} ${res.last}`);
                             console.log('\x1b[32m Employee successfully added!');
                         }
+                        init();
                     })
                 }
             })
-            init();
         })
 };
 
+// Update an employees role
 const updateRole = async () => {
     await inquirer
         .prompt([
@@ -256,12 +270,13 @@ const updateRole = async () => {
                     } else {
                         console.log('\x1b[32m Role successfully updated!');
                     }
+                    init();
                 })
             }
         })
-        init();
 };
 
+// Delete prompt
 const deleteOption = () => {
     inquirer
         .prompt([
@@ -290,6 +305,7 @@ const deleteOption = () => {
         })
 }
 
+// Delete department
 const deleteDept = () => {
     inquirer
         .prompt([
@@ -313,14 +329,16 @@ const deleteDept = () => {
                     if (err) {
                         console.error(err)
                     } else {
+                        deptArr = deptArr.filter(dept => dept.name !== res.dept);
                         console.log('\x1b[32m Department successfully removed!');
                     }
+                    init();
                 })
             })
-            init();
         })
 }
 
+// Delete role
 const deleteRole = () => {
     inquirer
     .prompt([
@@ -344,14 +362,16 @@ const deleteRole = () => {
                 if (err) {
                     console.error(err)
                 } else {
+                    roleArr = roleArr.filter(role => role !== res.role);
                     console.log('\x1b[32m Role successfully removed!');
                 }
+                init();
             })
         })
-        init();
     })
 }
 
+// Delete employee
 const deleteEmployee = () => {
     inquirer
         .prompt([
@@ -369,14 +389,16 @@ const deleteEmployee = () => {
                 if (err) {
                     console.error(err)
                 } else {
+                    empArr = empArr.filter(employee => employee !== res.employee);
                     console.log('\x1b[32m Employee successfully removed!');
                 }
+                init();
             })
-            init();
         })
 
 }
 
+// Quit Employee Tracker
 const quitApp = () => {
     console.log('\x1b[31m Employee Tracker app has closed');
     db.end();
