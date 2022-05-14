@@ -112,8 +112,8 @@ const addDept = () => {
                 } else {
                     console.log('\x1b[32m Department successfully added!');
                 }
-                init();
             })
+            init();
         })
 }
 
@@ -201,14 +201,12 @@ const addEmp = () => {
                         console.error(err)
                     } else {
                         managerID = results[0].id
-                        console.log(managerID);
                         insertEmp();
                     }
                 })
                 
                 const insertEmp = () => {
                     const params = [res.first, res.last, roleID, managerID]
-                    console.log(params);
                     db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, params, (err, results) => {
                         if (err) {
                             console.error(err)
@@ -239,7 +237,7 @@ const updateRole = async () => {
             }
         ])
         .then((res) => {
-            const empName = res.emp.split(" ");
+            const empName = res.emp.split(' ');
             let roleID;
             db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
                 if (err) {
@@ -260,9 +258,8 @@ const updateRole = async () => {
                     }
                 })
             }
-            init();
         })
-        
+        init();
 };
 
 const deleteOption = () => {
@@ -355,7 +352,30 @@ const deleteRole = () => {
     })
 }
 
-const deleteEmployee = () => {}
+const deleteEmployee = () => {
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'employee',
+                message: 'Which Employee would you like to remove?',
+                choices: empArr
+            },
+        ])
+        .then((res) => {
+            const empName = res.employee.split(' ');
+            const params = [ empName[0], empName[1] ];
+            db.query(`DELETE FROM employee WHERE first_name=(?) AND last_name =(?)`,params, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    console.log('\x1b[32m Employee successfully removed!');
+                }
+            })
+            init();
+        })
+
+}
 
 const quitApp = () => {
     console.log('\x1b[31m Employee Tracker app has closed');
