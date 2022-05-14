@@ -6,7 +6,7 @@ const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: '123456',
+        password: '',
         database: 'employee_tracker_db'
     },
     console.log(`Connected to the employee_tracker_db`)
@@ -265,7 +265,7 @@ const updateRole = async () => {
         
 };
 
-const deleted = () => {
+const deleteOption = () => {
     inquirer
         .prompt([
             {
@@ -277,14 +277,14 @@ const deleted = () => {
         ])
         .then((res) => {
             switch (res.selection) {
-                case Department:
-                    
+                case 'Department':
+                    deleteDept();
                     break;
-                case Role:
-                    
+                case 'Role':
+                    deleteRole();
                     break;
-                case Employee:
-                    
+                case 'Employee':
+                    deleteEmployee();
                     break;
             
                 default:
@@ -292,6 +292,70 @@ const deleted = () => {
             }
         })
 }
+
+const deleteDept = () => {
+    inquirer
+        .prompt([
+            {
+                type:'list',
+                name: 'dept',
+                message: 'Which Department would you like to remove?',
+                choices: deptArr
+            },
+        ])
+        .then((res) => {
+            let deptID;
+            db.query(`SELECT (id) FROM department WHERE name=(?)`, res.dept, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    deptID = results[0].id
+                }
+
+                db.query(`DELETE FROM department WHERE id=(?)`, deptID, (err, results) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        console.log('\x1b[32m Department successfully removed!');
+                    }
+                })
+            })
+            init();
+        })
+}
+
+const deleteRole = () => {
+    inquirer
+    .prompt([
+        {
+            type:'list',
+            name: 'role',
+            message: 'Which Role would you like to remove?',
+            choices: roleArr
+        },
+    ])
+    .then((res) => {
+        let roleID;
+        db.query(`SELECT (id) FROM role WHERE title=(?)`, res.role, (err, results) => {
+            if (err) {
+                console.error(err)
+            } else {
+                roleID = results[0].id
+            }
+
+            db.query(`DELETE FROM role WHERE id=(?)`, roleID, (err, results) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    console.log('\x1b[32m Role successfully removed!');
+                }
+            })
+        })
+        init();
+    })
+}
+
+const deleteEmployee = () => {}
 
 const quitApp = () => {
     console.log('\x1b[31m Employee Tracker app has closed');
@@ -305,7 +369,7 @@ function init() {
                 type: 'list',
                 name: 'initial',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Delete Department, Role, or Employee', 'QUIT']
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Remove a Department, Role, or Employee', 'QUIT']
             },
         ])
         .then((data) => {
@@ -331,8 +395,8 @@ function init() {
                 case 'Update an Employee Role':
                     updateRole();
                     break;
-                case 'Delete Department, Role, or Employee':
-                    deleted();
+                case 'Remove a Department, Role, or Employee':
+                    deleteOption();
                     break;
                 case 'QUIT':
                     quitApp();
