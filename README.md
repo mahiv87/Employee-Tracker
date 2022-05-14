@@ -14,6 +14,8 @@
 
 ## Description
 
+[Link to video demonstration](https://drive.google.com/file/d/1HChf6Go-xChrEsgv3vPtUN7X9PXAEsA5/view?usp=sharing)
+
 A command line app that manages a company's employee database.
 
 ## Technologies
