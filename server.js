@@ -208,6 +208,20 @@ const addEmp = () => {
                     roleID = results[0].id
                 }
 
+                if (res.manager === 'None') {
+                    let managerID;
+                    const params = [res.first, res.last, roleID, managerID]
+                    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, params, (err, results) => {
+                        if (err) {
+                            console.err(err)
+                        } else {
+                            empArr.push(`${res.first} ${res.last}`);
+                            console.log('\x1b[32m Employee successfully added!');
+                        }
+                        init();
+                    })
+                } else {
+
                 db.query(`SELECT (id) FROM employee WHERE first_name=(?) AND last_name=(?)`, [managerIdArr[0], managerIdArr[1]], (err, results) => {
                     if (err) {
                         console.error(err)
@@ -229,6 +243,7 @@ const addEmp = () => {
                         init();
                     })
                 }
+            }
             })
         })
 };
