@@ -70,10 +70,10 @@ const viewDepts = () =>
 // View all roles
 const viewRoles = () =>
 	db.query(
-		`SELECT role.id AS id,
-    role.title AS title,
+		`SELECT role.id,
+    role.title,
     department.name AS department,
-    role.salary AS salary
+    role.salary
     FROM role
     JOIN department ON role.department_id = department.id
     ORDER BY id ASC`,
